@@ -8,6 +8,13 @@
       "when": 1738922400000,
       "tag": "0000_init_auth_tables",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1738929600000,
+      "tag": "0001_add_fk_indexes",
+      "breakpoints": true
     }
   ]
 }
