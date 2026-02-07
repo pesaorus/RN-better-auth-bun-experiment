@@ -22,11 +22,9 @@ beforeAll(async () => {
 	process.env.BETTER_AUTH_URL = BASE
 	process.env.DATABASE_PATH = TEST_DB
 
-	// Run migrations programmatically
-	const { getMigrations } = await import("better-auth/db")
-	const { auth } = await import("../src/auth")
-	const { runMigrations } = await getMigrations(auth.options)
-	await runMigrations()
+	// Run Drizzle migrations programmatically
+	const { runMigrations } = await import("../src/db/migrate")
+	runMigrations(TEST_DB)
 
 	// Start the server
 	const app = await import("../src/index")
