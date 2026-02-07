@@ -8,6 +8,12 @@
     "test": "bun run --filter '*' test",
     "test:server": "bun run --filter @app/server test",
     "test:mobile": "bun run --filter @app/mobile test",
-    "db:migrate": "bun run --filter @app/server db:migrate"
+    "db:migrate": "bun run --filter @app/server db:migrate",
+    "lint": "bunx biome check .",
+    "lint:fix": "bunx biome check --write .",
+    "format": "bunx biome format --write ."
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.3.14"
   }
 }
