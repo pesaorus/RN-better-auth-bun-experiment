@@ -1,0 +1,13 @@
+{
+  "name": "rn-better-auth-bun-experiment",
+  "private": true,
+  "workspaces": ["apps/*", "packages/*"],
+  "scripts": {
+    "dev:server": "bun run --filter @app/server dev",
+    "dev:mobile": "bun run --filter @app/mobile start",
+    "test": "bun run --filter '*' test",
+    "test:server": "bun run --filter @app/server test",
+    "test:mobile": "bun run --filter @app/mobile test",
+    "db:migrate": "bun run --filter @app/server db:migrate"
+  }
+}

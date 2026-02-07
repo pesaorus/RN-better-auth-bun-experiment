@@ -1,0 +1,41 @@
+# Dependencies
+node_modules/
+
+# Bun
+bun.lockb
+
+# Environment
+.env
+.env.local
+
+# Database
+*.db
+*.sqlite
+
+# Build output
+dist/
+.expo/
+android/
+ios/
+web-build/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test
+coverage/
+
+# Expo
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*

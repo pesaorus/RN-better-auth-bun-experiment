@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src",
+    "types": ["bun-types"],
+    "paths": {
+      "@app/shared": ["../../packages/shared/src"]
+    }
+  },
+  "include": ["src", "tests"]
+}
