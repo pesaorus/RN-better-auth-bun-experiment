@@ -20,5 +20,10 @@ export const auth = betterAuth({
 		maxPasswordLength: 128,
 		autoSignIn: true,
 	},
+	user: {
+		deleteUser: {
+			enabled: true,
+		},
+	},
 	plugins: [expo()],
 })
