@@ -11,8 +11,8 @@ config.watchFolders = [monorepoRoot]
 
 // Let Metro resolve packages from the monorepo root
 config.resolver.nodeModulesPaths = [
-	path.resolve(projectRoot, "node_modules"),
-	path.resolve(monorepoRoot, "node_modules"),
+  path.resolve(projectRoot, "node_modules"),
+  path.resolve(monorepoRoot, "node_modules"),
 ]
 
 // Resolve Better Auth package exports
