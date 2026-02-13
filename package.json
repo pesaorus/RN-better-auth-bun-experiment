@@ -16,6 +16,8 @@
     "release:ios": "bun run --filter @app/mobile fastlane:ios:release",
     "release:android:beta": "bun run --filter @app/mobile fastlane:android:beta",
     "release:android": "bun run --filter @app/mobile fastlane:android:release",
+    "release:beta": "bun run lint && bun run test && bun run --filter @app/mobile fastlane:beta",
+    "release:production": "bun run lint && bun run test && bun run --filter @app/mobile fastlane:release",
     "release:bump": "bun run --filter @app/mobile fastlane:bump"
   },
   "devDependencies": {

@@ -137,6 +137,15 @@ bun run release:bump -- version:1.1.0 build:2
 
 This updates `app.json` so `expo prebuild` picks up the new version.
 
+### Combined Scripts
+
+```bash
+bun run release:beta        # Lint + test + build both platforms + upload to beta
+bun run release:production  # Lint + test + build both platforms + upload to production
+```
+
+These run lint and tests first, then build and upload iOS followed by Android. If lint or tests fail, the release is aborted.
+
 ### Release Workflow
 
 ```bash
@@ -146,16 +155,14 @@ bun run release:bump -- version:1.1.0 build:5
 # 2. Commit the version change
 git add apps/mobile/app.json && git commit -m "Bump to 1.1.0 (build 5)"
 
-# 3. Build & upload to beta testing
-bun run release:ios:beta
-bun run release:android:beta
+# 3. Lint, test, build & upload both platforms to beta
+bun run release:beta
 
 # 4. Test on real devices via TestFlight / Google Play internal track
 # ...
 
-# 5. Promote to production
-bun run release:ios
-bun run release:android
+# 5. Promote to production (lint + test + build + upload)
+bun run release:production
 ```
 
 **When to bump:**
@@ -163,7 +170,8 @@ bun run release:android
 - Bump the **version** (`1.0.0` → `1.1.0`) when you want users to see a new version in the store
 - Bump only the **build** when re-uploading a fix for the same version
 
-> You can also run lanes directly from `apps/mobile/` via `bundle exec fastlane <lane>`.
+> You can also target a single platform: `bun run release:ios:beta`, `bun run release:android:beta`, etc.
+> Or run lanes directly from `apps/mobile/` via `bundle exec fastlane <lane>`.
 
 ## Tech Stack
 

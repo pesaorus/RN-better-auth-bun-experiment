@@ -14,6 +14,8 @@
     "fastlane:ios:release": "bundle exec fastlane ios release",
     "fastlane:android:beta": "bundle exec fastlane android beta",
     "fastlane:android:release": "bundle exec fastlane android release",
+    "fastlane:beta": "bundle exec fastlane ios beta && bundle exec fastlane android beta",
+    "fastlane:release": "bundle exec fastlane ios release && bundle exec fastlane android release",
     "fastlane:bump": "bundle exec fastlane bump"
   },
   "dependencies": {
