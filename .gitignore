@@ -39,3 +39,11 @@ coverage/
 *.key
 *.mobileprovision
 *.orig.*
+
+# Fastlane
+apps/mobile/fastlane/report.xml
+apps/mobile/fastlane/Preview.html
+apps/mobile/fastlane/screenshots
+apps/mobile/fastlane/test_output
+apps/mobile/build/
+apps/mobile/vendor/

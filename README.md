@@ -95,6 +95,49 @@ bun run test:server
 bun run test:mobile
 ```
 
+## Fastlane (App Store & Google Play)
+
+Fastlane is set up in `apps/mobile/fastlane/` for releasing to both stores. All secrets are loaded from the root `.env` file.
+
+### Prerequisites
+
+- Ruby >= 2.7
+- Bundler (`gem install bundler`)
+- Xcode (for iOS builds)
+- Android SDK + JDK (for Android builds)
+
+### Setup
+
+```bash
+cd apps/mobile
+bundle install      # Install Fastlane + dotenv
+```
+
+Fill in the Fastlane variables in your `.env` (see `.env.example` for the full list).
+
+### iOS
+
+```bash
+bundle exec fastlane ios certificates  # Sync code signing via Match
+bundle exec fastlane ios beta          # Build + upload to TestFlight
+bundle exec fastlane ios release       # Build + upload to App Store
+```
+
+### Android
+
+```bash
+bundle exec fastlane android beta     # Build AAB + upload to internal track
+bundle exec fastlane android release  # Build AAB + upload to production
+```
+
+### Version Bumping
+
+```bash
+bundle exec fastlane bump version:1.1.0 build:2
+```
+
+This updates `app.json` so `expo prebuild` picks up the new version.
+
 ## Tech Stack
 
 - **Runtime**: Bun
@@ -102,6 +145,7 @@ bun run test:mobile
 - **Auth**: Better Auth (email/password, with Expo plugin)
 - **Database**: SQLite (via bun:sqlite) — PostgreSQL migration planned
 - **Mobile**: Expo + React Native + Expo Router
+- **CD**: Fastlane (App Store + Google Play)
 - **Testing**: bun:test (server), Jest + React Native Testing Library (mobile)
 
 ## License
