@@ -38,6 +38,11 @@ bun run db:migrate         # Run Drizzle migrations
 bun run lint               # Check code with Biome
 bun run lint:fix           # Auto-fix lint issues
 bun run format             # Format code with Biome
+bun run release:ios:beta   # Build iOS + upload to TestFlight
+bun run release:ios        # Build iOS + upload to App Store
+bun run release:android:beta # Build Android + upload to internal track
+bun run release:android    # Build Android + upload to Google Play production
+bun run release:bump       # Bump version in app.json (pass -- version:X.Y.Z build:N)
 ```
 
 Server-specific (run from `apps/server/`):

@@ -118,25 +118,26 @@ Fill in the Fastlane variables in your `.env` (see `.env.example` for the full l
 ### iOS
 
 ```bash
-bundle exec fastlane ios certificates  # Sync code signing via Match
-bundle exec fastlane ios beta          # Build + upload to TestFlight
-bundle exec fastlane ios release       # Build + upload to App Store
+bun run release:ios:beta    # Build + upload to TestFlight
+bun run release:ios         # Build + upload to App Store
 ```
 
 ### Android
 
 ```bash
-bundle exec fastlane android beta     # Build AAB + upload to internal track
-bundle exec fastlane android release  # Build AAB + upload to production
+bun run release:android:beta  # Build AAB + upload to internal track
+bun run release:android       # Build AAB + upload to production
 ```
 
 ### Version Bumping
 
 ```bash
-bundle exec fastlane bump version:1.1.0 build:2
+bun run release:bump -- version:1.1.0 build:2
 ```
 
 This updates `app.json` so `expo prebuild` picks up the new version.
+
+> You can also run lanes directly from `apps/mobile/` via `bundle exec fastlane <lane>`.
 
 ## Tech Stack
 
