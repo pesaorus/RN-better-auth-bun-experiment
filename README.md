@@ -137,6 +137,32 @@ bun run release:bump -- version:1.1.0 build:2
 
 This updates `app.json` so `expo prebuild` picks up the new version.
 
+### Release Workflow
+
+```bash
+# 1. Bump version (every upload needs a unique build number)
+bun run release:bump -- version:1.1.0 build:5
+
+# 2. Commit the version change
+git add apps/mobile/app.json && git commit -m "Bump to 1.1.0 (build 5)"
+
+# 3. Build & upload to beta testing
+bun run release:ios:beta
+bun run release:android:beta
+
+# 4. Test on real devices via TestFlight / Google Play internal track
+# ...
+
+# 5. Promote to production
+bun run release:ios
+bun run release:android
+```
+
+**When to bump:**
+- Bump the **build number** before every upload (both stores reject duplicate build numbers)
+- Bump the **version** (`1.0.0` → `1.1.0`) when you want users to see a new version in the store
+- Bump only the **build** when re-uploading a fix for the same version
+
 > You can also run lanes directly from `apps/mobile/` via `bundle exec fastlane <lane>`.
 
 ## Tech Stack
