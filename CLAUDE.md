@@ -38,6 +38,13 @@ bun run db:migrate         # Run Drizzle migrations
 bun run lint               # Check code with Biome
 bun run lint:fix           # Auto-fix lint issues
 bun run format             # Format code with Biome
+bun run release:bump       # Bump version in app.json (pass -- version:X.Y.Z build:N)
+bun run release:beta       # Lint + test + build + upload both platforms to beta
+bun run release:production # Lint + test + build + upload both platforms to production
+bun run release:ios:beta   # Build iOS + upload to TestFlight
+bun run release:ios        # Build iOS + upload to App Store
+bun run release:android:beta # Build Android + upload to internal track
+bun run release:android    # Build Android + upload to Google Play production
 ```
 
 Server-specific (run from `apps/server/`):
@@ -85,6 +92,30 @@ Better Auth handles `/api/auth/**` automatically. Custom endpoints:
 - `babel.config.js` has module resolver aliases for better-auth imports
 - `metro.config.js` enables `unstable_enablePackageExports` for monorepo support
 
+### Fastlane (`apps/mobile/fastlane/`)
+
+Fastlane is configured for releasing to both App Store and Google Play. All secrets are loaded from `.env` via the `dotenv` gem.
+
+- **Appfile** — app identifier, Apple ID, team IDs, Google Play JSON key (all from env vars)
+- **Matchfile** — iOS code signing via a private git repo (Match)
+- **Fastfile** — lanes for both platforms:
+  - `ios certificates` — sync Match signing certs
+  - `ios beta` — build + upload to TestFlight
+  - `ios release` — build + upload to App Store
+  - `android beta` — build AAB + upload to Google Play internal track
+  - `android release` — build AAB + upload to Google Play production
+  - `bump version:X.Y.Z build:N` — bump version in app.json
+
+Fastlane commands (run from `apps/mobile/`):
+```bash
+bundle install             # Install Ruby dependencies (first time)
+bundle exec fastlane ios beta
+bundle exec fastlane android beta
+bundle exec fastlane bump version:1.1.0 build:2
+```
+
+Native projects are generated automatically via `expo prebuild --clean` before each build.
+
 ### Shared (`packages/shared/`)
 
 - TypeScript interfaces: `User`, `Session`, `ApiError`, `EmailPasswordCredentials`, `SignUpPayload`
@@ -114,6 +145,17 @@ Copy `.env.example` to `.env` and configure:
 | `PORT` | No | `3000` | Server port |
 | `DATABASE_PATH` | No | `sqlite.db` | Path to SQLite database file |
 | `EXPO_PUBLIC_SERVER_URL` | No | `http://localhost:3000` | Server URL for the mobile app |
+| `APP_IDENTIFIER` | No | `com.example.rnbetterauth` | iOS bundle ID / Android package name |
+| `APPLE_ID` | Fastlane | — | Apple Developer account email |
+| `APPLE_TEAM_ID` | Fastlane | — | Apple Developer Team ID |
+| `APP_STORE_CONNECT_TEAM_ID` | Fastlane | — | App Store Connect Team ID |
+| `MATCH_GIT_URL` | Fastlane | — | Git repo URL for Match certificates |
+| `MATCH_PASSWORD` | Fastlane | — | Encryption password for Match |
+| `ANDROID_KEYSTORE_FILE` | Fastlane | — | Path to Android release keystore |
+| `ANDROID_KEYSTORE_PASSWORD` | Fastlane | — | Android keystore password |
+| `ANDROID_KEY_ALIAS` | Fastlane | — | Android signing key alias |
+| `ANDROID_KEY_PASSWORD` | Fastlane | — | Android signing key password |
+| `GOOGLE_PLAY_JSON_KEY_FILE` | Fastlane | — | Path to Google Play service account JSON |
 
 ## Known Limitations
 

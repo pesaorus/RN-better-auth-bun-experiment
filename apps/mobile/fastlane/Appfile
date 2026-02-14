@@ -1,0 +1,9 @@
+# iOS
+app_identifier(ENV["APP_IDENTIFIER"] || "com.example.rnbetterauth")
+apple_id(ENV["APPLE_ID"])
+team_id(ENV["APPLE_TEAM_ID"])
+itc_team_id(ENV["APP_STORE_CONNECT_TEAM_ID"])
+
+# Android
+json_key_file(ENV["GOOGLE_PLAY_JSON_KEY_FILE"])
+package_name(ENV["APP_IDENTIFIER"] || "com.example.rnbetterauth")

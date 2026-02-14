@@ -1,0 +1,151 @@
+require "dotenv"
+
+# Load .env from the mobile app root (two levels up from fastlane/)
+Dotenv.load(File.join(__dir__, "..", ".env"))
+
+default_platform(:ios)
+
+# ---------------------------------------------------------------------------
+# Shared helpers
+# ---------------------------------------------------------------------------
+
+def app_identifier
+  ENV["APP_IDENTIFIER"] || "com.example.rnbetterauth"
+end
+
+def ensure_native_projects
+  Dir.chdir("..") do
+    sh("bunx", "expo", "prebuild", "--clean")
+  end
+end
+
+def bump_version(version: nil, build: nil)
+  # Bump version in app.json so Expo prebuild picks it up
+  app_json_path = File.join(__dir__, "..", "app.json")
+  app_json = JSON.parse(File.read(app_json_path))
+
+  app_json["expo"]["version"] = version if version
+
+  if build
+    app_json["expo"]["ios"] ||= {}
+    app_json["expo"]["ios"]["buildNumber"] = build.to_s
+    app_json["expo"]["android"] ||= {}
+    app_json["expo"]["android"]["versionCode"] = build.to_i
+  end
+
+  File.write(app_json_path, JSON.pretty_generate(app_json) + "\n")
+end
+
+# ---------------------------------------------------------------------------
+# iOS
+# ---------------------------------------------------------------------------
+
+platform :ios do
+  desc "Sync iOS code signing certificates via Match"
+  lane :certificates do
+    match(type: "appstore", readonly: true)
+  end
+
+  desc "Build the iOS app"
+  lane :build do
+    ensure_native_projects
+
+    match(type: "appstore", readonly: true)
+
+    build_app(
+      workspace: "../ios/rnbetterauth.xcworkspace",
+      scheme: "rnbetterauth",
+      export_method: "app-store",
+      output_directory: "../build",
+      output_name: "rnbetterauth.ipa",
+      clean: true,
+      xcargs: "-allowProvisioningUpdates",
+    )
+  end
+
+  desc "Submit to TestFlight"
+  lane :beta do
+    build
+
+    upload_to_testflight(
+      apple_id: ENV["APPLE_ID"],
+      skip_waiting_for_build_processing: true,
+    )
+  end
+
+  desc "Submit to App Store"
+  lane :release do
+    build
+
+    upload_to_app_store(
+      skip_metadata: false,
+      skip_screenshots: true,
+      submit_for_review: false,
+      automatic_release: false,
+      force: true,
+    )
+  end
+end
+
+# ---------------------------------------------------------------------------
+# Android
+# ---------------------------------------------------------------------------
+
+platform :android do
+  desc "Build the Android app bundle (AAB)"
+  lane :build do
+    ensure_native_projects
+
+    gradle(
+      project_dir: "../android",
+      task: "bundle",
+      build_type: "Release",
+      properties: {
+        "android.injected.signing.store.file" => ENV["ANDROID_KEYSTORE_FILE"],
+        "android.injected.signing.store.password" => ENV["ANDROID_KEYSTORE_PASSWORD"],
+        "android.injected.signing.key.alias" => ENV["ANDROID_KEY_ALIAS"],
+        "android.injected.signing.key.password" => ENV["ANDROID_KEY_PASSWORD"],
+      },
+    )
+  end
+
+  desc "Submit to Google Play internal testing track"
+  lane :beta do
+    build
+
+    upload_to_play_store(
+      track: "internal",
+      aab: "../android/app/build/outputs/bundle/release/app-release.aab",
+      json_key: ENV["GOOGLE_PLAY_JSON_KEY_FILE"],
+      package_name: app_identifier,
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+    )
+  end
+
+  desc "Submit to Google Play production"
+  lane :release do
+    build
+
+    upload_to_play_store(
+      track: "production",
+      aab: "../android/app/build/outputs/bundle/release/app-release.aab",
+      json_key: ENV["GOOGLE_PLAY_JSON_KEY_FILE"],
+      package_name: app_identifier,
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+    )
+  end
+end
+
+# ---------------------------------------------------------------------------
+# Cross-platform
+# ---------------------------------------------------------------------------
+
+desc "Bump app version. Usage: fastlane bump version:1.2.0 build:10"
+lane :bump do |options|
+  bump_version(version: options[:version], build: options[:build])
+  UI.success("Version bumped to #{options[:version] || 'unchanged'} (build #{options[:build] || 'unchanged'})")
+end
